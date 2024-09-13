@@ -4,6 +4,7 @@ import cheerio from 'cheerio';
 import readline from 'readline';
 import cron from 'node-cron';
 import { fetchCounts } from './secret';
+import { sendTelegramAlarm } from './telegram';
 
 dotenv.config();
 
@@ -13,7 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 const port = process.env.PORT ?? 3000;
 
 // five second
-cron.schedule('*/5 * * * * *', async () => {
+cron.schedule('*/3 * * * * *', async () => {
     const secretDatasString = process.env.SECRET_DATAS;
     if(!secretDatasString) return;
 
@@ -31,6 +32,7 @@ cron.schedule('*/5 * * * * *', async () => {
             const [firstVar, comment] = text.split('::').map(part => part.trim());
             console.log('secret data:', firstVar);
             console.log('comment:', comment);
+            await sendTelegramAlarm(`[${firstVar}] ${comment}`);
         }
     }
 });
