@@ -5,6 +5,7 @@ import readline from 'readline';
 import cron from 'node-cron';
 import { fetchCounts } from './secret';
 import { sendTelegramAlarm } from './telegram';
+import { rateProcess } from './rate';
 
 dotenv.config();
 
@@ -39,4 +40,5 @@ cron.schedule('*/3 * * * * *', async () => {
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
+  rateProcess(); 
 });
